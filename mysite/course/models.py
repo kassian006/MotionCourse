@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Avg
-
+from ..users.models import UserProfile, Student
 
 STATUS_COURSE_CHOICES = (
     ('free', 'free'),
