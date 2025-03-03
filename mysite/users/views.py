@@ -17,7 +17,7 @@ class StudentListAPIView(generics.ListAPIView):
     serializer_class = StudentListSerializer
 
 
-class StudentDetailAPIView(generics.RetrieveAPIView):
+class StudentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentDetailSerializer
 
@@ -25,14 +25,14 @@ class StudentDetailAPIView(generics.RetrieveAPIView):
         return UserProfile.objects.filter(id=self.request.user.id)
 
 
-class TeacherListAPIView(generics.ListAPIView):
-    queryset = Teacher.objects.all()
-    serializer_class = TeacherListSerializer
+class OwnerListAPIView(generics.ListAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerListSerializer
 
 
-class TeacherDetailAPIView(generics.RetrieveAPIView):
-    queryset = Teacher.objects.all()
-    serializer_class = TeacherListSerializer
+class OwnerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerDetailSerializers
 
     def get_queryset(self):
         return UserProfile.objects.filter(id=self.request.user.id)

@@ -17,6 +17,9 @@ class MainCourse(models.Model):
     time = models.TimeField()
     count_lessons = models.PositiveSmallIntegerField()
 
+    def __str__(self):
+        return self.title
+
     def get_good_check(self):
         leader_rating = self.reviews_course.all()
         if leader_rating.exists():

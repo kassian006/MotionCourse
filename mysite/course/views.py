@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from .models import *
-from ..users.models import UserProfile
+from users.models import UserProfile
 from .serializers import *
 
 
@@ -15,7 +15,7 @@ class MainCourseDetailViewSet(viewsets.ModelViewSet):
     serializer_class = MainCourseDetailSerializer
 
 
-class FavoriteListViewSet(viewsets.ModelViewSet):
+class FavoriteViewSet(viewsets.ModelViewSet):
     queryset = MainCourse.objects.all()
     serializer_class = FavoriteSerializer
 
@@ -23,7 +23,7 @@ class FavoriteListViewSet(viewsets.ModelViewSet):
         return UserProfile.objects.filter(id=self.request.user.id)
 
 
-class FavoriteItemListViewSet(viewsets.ModelViewSet):
+class FavoriteItemViewSet(viewsets.ModelViewSet):
     queryset = FavoriteItem.objects.all()
     serializer_class = FavoriteItemSerializer
 

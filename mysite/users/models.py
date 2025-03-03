@@ -1,14 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from ..course.models import *
+from course.models import *
+
+
 STATUS_CHOICES = (
     ('admin', 'admin'),
     ('student', 'student'),
-    ('teacher', 'teacher'),
+    ('owner', 'owner'),
 )
 
 class Country(models.Model):
-    country_name: models.CharField(max_length=66, null=True, blank=True)
+    country_name = models.CharField(max_length=65, null=True, blank=True)
 
     def __str__(self):
         return self.country_name
@@ -45,12 +47,12 @@ class Student(UserProfile):
         verbose_name_plural = 'Student'
 
 
-class Teacher(UserProfile):
+class Owner(UserProfile):
     pass
 
     def __str__(self):
         return f'{self.first_name}, {self.last_name}'
 
     class Meta:
-        verbose_name = 'Teacher'
-        verbose_name_plural = 'Teacher'
+        verbose_name = 'Owner'
+        verbose_name_plural = 'Owner'
