@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import course.models
 
 STATUS_CHOICES = (
     ('admin', 'admin'),
@@ -7,10 +8,23 @@ STATUS_CHOICES = (
     ('teacher', 'teacher'),
 )
 
+class Country(models.Model):
+    country_name: models.CharField(max_length=66, null=True, blank=True)
+
+    def __str__(self):
+        return self.country_name
+
+
+class City(models.Model):
+    city_name = models.CharField(max_length=65, null=True, blank=True)
+
+    def __str__(self):
+        return self.city_name
+
 
 class UserProfile(AbstractUser):
-    country = models.CharField(max_length=66, unique=True)
-    city = models.CharField(max_length=65, unique=True)
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     background = models.FileField(upload_to='background/', null=True, blank=True)
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='student')
