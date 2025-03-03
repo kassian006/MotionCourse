@@ -13,25 +13,13 @@ class MainCourseDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FavoriteListSerializer(serializers.ModelSerializer):
+class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorite
         fields = '__all__'
 
 
-class FavoriteDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Favorite
-        fields = '__all__'
-
-
-class FavoriteItemListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FavoriteItem
-        fields = '__all__'
-
-
-class FavoriteItemDetailSerializer(serializers.ModelSerializer):
+class FavoriteItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoriteItem
         fields = '__all__'

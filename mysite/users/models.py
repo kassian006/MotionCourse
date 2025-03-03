@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import course.models
-
+from ..course.models import *
 STATUS_CHOICES = (
     ('admin', 'admin'),
     ('student', 'student'),
@@ -28,6 +27,7 @@ class UserProfile(AbstractUser):
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     background = models.FileField(upload_to='background/', null=True, blank=True)
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='student')
+
 
 
     def __str__(self):
