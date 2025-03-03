@@ -26,6 +26,9 @@ class MainCourse(models.Model):
         return False
 
 
+class Lessons(models.Model):
+    title = models.CharField()
+
 
 class Favorite(models.Model):
     user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='favorite_user')
