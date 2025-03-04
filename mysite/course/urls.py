@@ -2,7 +2,7 @@ from .views import *
 from django.urls import path, include
 from rest_framework import routers
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'main_course', MainCourseListViewSet, basename='main_course'),
 router.register(r'favorite', FavoriteViewSet, basename='favorite'),
 router.register(r'favorite_item', FavoriteItemViewSet, basename='favorite_item_'),
@@ -10,4 +10,5 @@ router.register(r'course_review', CourseReviewListViewSet, basename='course_revi
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('api/', include(router.urls)),
 ]

@@ -49,6 +49,7 @@ class Student(UserProfile):
 
 
 class Owner(UserProfile):
+    owner_course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, related_name='owner_course')
     pass
 
     def __str__(self):

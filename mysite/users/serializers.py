@@ -46,6 +46,7 @@ class StudentListSerializer(serializers.ModelSerializer):
 
 
 class OwnerListSerializer(serializers.ModelSerializer):
+    owner_course = MainCourseListSerializer()
     class Meta:
         model = Owner
-        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status']
+        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'owner_course']

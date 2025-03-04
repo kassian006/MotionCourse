@@ -3,9 +3,15 @@ from rest_framework import serializers
 
 
 class MainCourseListSerializer(serializers.ModelSerializer):
+    good_check = serializers.SerializerMethodField()
+    time = serializers.TimeField(format('%H:%M'))
+
     class Meta:
         model = MainCourse
         fields = '__all__'
+
+    def get_good_check(self, obj):
+        return obj.get_good_check()
 
 class MainCourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
