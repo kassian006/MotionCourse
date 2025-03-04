@@ -37,6 +37,7 @@ class UserProfile(AbstractUser):
 
 
 class Student(UserProfile):
+    my_course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, related_name='my_course')
     pass
 
     def __str__(self):

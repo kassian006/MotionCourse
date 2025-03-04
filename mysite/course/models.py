@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Avg
-from users.models import UserProfile, Student
+from users.models import UserProfile, Student, Owner, Country, City
 
 STATUS_COURSE_CHOICES = (
     ('free', 'free'),
@@ -15,6 +15,7 @@ class MainCourse(models.Model):
     course_img = models.ImageField(upload_to='course_img/')
     status = models.CharField(choices=STATUS_COURSE_CHOICES, max_length=64)
     time = models.TimeField()
+    # user_course = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_course')
     count_lessons = models.PositiveSmallIntegerField()
 
     def __str__(self):

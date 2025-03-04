@@ -1,4 +1,5 @@
 from .models import *
+from course.serializers import MainCourseListSerializer
 from rest_framework import serializers
 
 
@@ -37,36 +38,14 @@ class UserProfileSimpleSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name']
 
 
-
 class StudentListSerializer(serializers.ModelSerializer):
-    student_image = serializers.ImageField(source='user.profile.image', read_only=True)
-
-
+    my_course = MainCourseListSerializer()
     class Meta:
         model = Student
-        fields = ['id','student_image']
-
-
-class StudentDetailSerializer(serializers.ModelSerializer):
-    student_image = serializers.ImageField(source='user.profile.image', read_only=True)
-
-
-    class Meta:
-        model = Student
-        fields = ['student_image', 'background', 'first_name', 'last_name', 'status']
+        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'my_course']
 
 
 class OwnerListSerializer(serializers.ModelSerializer):
-    owner_image = serializers.ImageField(source='user.profile.image', read_only=True)
-
     class Meta:
         model = Owner
-        fields = ['id', 'owner_image']
-
-
-class OwnerDetailSerializers(serializers.ModelSerializer):
-    owner_image = serializers.ImageField(source='user.profile.image', read_only=True)
-
-    class Meta:
-        model = Owner
-        fields = ['owner_image', 'background', 'first_name', 'last_name', 'status']
+        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status']

@@ -16,19 +16,19 @@ class MainCourseDetailViewSet(viewsets.ModelViewSet):
 
 
 class FavoriteViewSet(viewsets.ModelViewSet):
-    queryset = MainCourse.objects.all()
+    queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
 
     def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+        return Favorite.objects.filter(user__id=self.request.user.id)
 
 
 class FavoriteItemViewSet(viewsets.ModelViewSet):
     queryset = FavoriteItem.objects.all()
     serializer_class = FavoriteItemSerializer
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class CourseReviewListViewSet(viewsets.ModelViewSet):
