@@ -1,10 +1,21 @@
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from .models import *
-from .serializers import UserProfileSerializer, StudentListSerializer, OwnerListSerializer, UserSerializer, LoginSerializer
+from .serializers import UserProfileSerializer, StudentListSerializer, OwnerListSerializer, UserSerializer, \
+    LoginSerializer, VerifyResetCodeSerializer, LogoutSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.decorators import api_view
 
+
+
+@api_view(['POST'])
+def verify_reset_code(request):
+    serializer = VerifyResetCodeSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({'message': 'Пароль успешно сброшен.'}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterView(generics.CreateAPIView):
@@ -32,6 +43,8 @@ class CustomLoginView(TokenObtainPairView):
 
 
 class LogoutView(generics.GenericAPIView):
+    serializer_class = LogoutSerializer  # Указываем сериализатор
+
     def post(self, request, *args, **kwargs):
         try:
             refresh_token = request.data["refresh"]
