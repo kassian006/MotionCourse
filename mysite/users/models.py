@@ -24,6 +24,7 @@ class City(models.Model):
 
 
 class UserProfile(AbstractUser):
+    email = models.EmailField(unique=True)  # Делаем email уникальным
     country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, blank=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
