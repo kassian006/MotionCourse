@@ -1,18 +1,31 @@
 from rest_framework import viewsets, generics, status
-from rest_framework.response import Response
-from .models import *
 from users.models import UserProfile
 from .serializers import *
 
 
-class MainCourseListViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class MainCourseViewSet(viewsets.ModelViewSet):
     queryset = MainCourse.objects.all()
     serializer_class = MainCourseListSerializer
 
 
-class MainCourseDetailViewSet(viewsets.ModelViewSet):
-    queryset = MainCourse.objects.all()
-    serializer_class = MainCourseDetailSerializer
+class LessonViewSet(viewsets.ModelViewSet):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+
+
+class AboutUsViewSet(viewsets.ModelViewSet):
+    queryset = AboutUs.objects.all()
+    serializer_class = AboutUsSerializer
+
+
+class JoinUsViewSet(viewsets.ModelViewSet):
+    queryset = JoinUs.objects.all()
+    serializer_class = JoinUsSerializer
 
 
 class FavoriteViewSet(viewsets.ModelViewSet):
@@ -27,15 +40,10 @@ class FavoriteItemViewSet(viewsets.ModelViewSet):
     queryset = FavoriteItem.objects.all()
     serializer_class = FavoriteItemSerializer
 
-    # def get_queryset(self):
-    #     return UserProfile.objects.filter(id=self.request.user.id)
+    def get_queryset(self):
+        return Favorite.objects.filter(user__id=self.request.user.id)
 
 
-class CourseReviewListViewSet(viewsets.ModelViewSet):
+class CourseReviewViewSet(viewsets.ModelViewSet):
     queryset = CourseReview.objects.all()
     serializer_class = CourseReviewListSerializer
-
-
-class CourseReviewDetailViewSet(viewsets.ModelViewSet):
-    queryset = CourseReview.objects.all()
-    serializer_class = CourseReviewDetailSerializer
