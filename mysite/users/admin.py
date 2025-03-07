@@ -3,6 +3,8 @@ from .models import *
 from django.contrib.auth.admin import UserAdmin
 
 
+admin.site.register(Country)
+admin.site.register(City)
 admin.site.register(UserProfile)
 admin.site.register(Student)
-admin.site.register(Teacher)
+admin.site.register(Owner)
