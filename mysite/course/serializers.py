@@ -8,6 +8,9 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class MainCourseListSerializer(serializers.ModelSerializer):
+    good_check = serializers.SerializerMethodField()
+    time = serializers.TimeField(format('%H:%M'))
+
     class Meta:
         model = MainCourse
         fields = ['course_img', 'title', 'description', 'status', 'time', 'count_lessons', 'price']
@@ -24,6 +27,9 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ['name_lesson', 'video_lessons', 'title']
+
+    def get_good_check(self, obj):
+        return obj.get_good_check()
 
 class MainCourseDetailSerializer(serializers.ModelSerializer):
     lesson = LessonSerializer(many=True, read_only=True)
