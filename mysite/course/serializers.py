@@ -13,7 +13,10 @@ class MainCourseListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MainCourse
-        fields = ['course_img', 'title', 'description', 'status', 'time', 'count_lessons', 'price']
+        fields = ['course_img', 'title', 'description', 'status', 'time', 'count_lessons', 'price', 'good_check']
+
+    def get_good_check(self, obj):
+        return obj.get_good_check()
 
 
 class VideoCourseSerializer(serializers.ModelSerializer):

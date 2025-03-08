@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     CategoryViewSet,
-    MainCourseViewSet,
+    MainCourseListViewSet,
     LessonViewSet,
     AboutUsViewSet,
     JoinUsViewSet,
@@ -13,7 +13,7 @@ from .views import (
 
 router = DefaultRouter()
 router.register(r'categories', CategoryViewSet, basename='category')
-router.register(r'main-courses', MainCourseViewSet, basename='maincourse')
+router.register(r'main-courses', MainCourseListViewSet, basename='maincourse')
 router.register(r'lessons', LessonViewSet, basename='lesson')
 router.register(r'about-us', AboutUsViewSet, basename='aboutus')
 router.register(r'join-us', JoinUsViewSet, basename='joinus')
