@@ -13,5 +13,18 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('students/', StudentListAPIView.as_view(), name='students_list'),
+    path('students/<int:pk>/', StudentDetailAPIView.as_view(), name='students_detail'),
     path('owner/', OwnerListAPIView.as_view(), name='owner_list'),
+    path('owner/<int:pk>/', OwnerDetailAPIView.as_view(), name='owner_detail'),
+    path('group/<int:group_id>/remove_user/<int:user_id>/', RemoveUserFromGroupView.as_view(),
+         name='remove_user_from_group'),
+    path('user/', GroupMemberView.as_view(), name='user_list'),
+    path('user/<int:pk>/', GroupMemberRetrieve.as_view(), name='user_detail'),
+    path('groups/', GroupListCreateView.as_view(), name='group-list-create'),
+    path('groups/<int:pk>/', GroupDetailView.as_view(), name='group-detail'),
+    path('group_members/', GroupMemberView.as_view(), name='group_member-list'),
+    path('group_members/<int:pk>/', GroupMemberRetrieve.as_view(), name='group_member-detail'),
+    path('messages/', MessageListCreateView.as_view(), name='message-list-create'),
+    path('messages/<int:pk>/', MessageDetailView.as_view(), name='message-detail'),
+
 ]

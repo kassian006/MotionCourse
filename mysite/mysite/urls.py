@@ -10,7 +10,7 @@ from django.conf import settings
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Episyche Technologies",
+        title="Motion Wep Course",
         default_version='v1',),
     public=True,
     permission_classes=(permissions.AllowAny,),

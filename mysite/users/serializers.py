@@ -127,6 +127,12 @@ class UserProfileSimpleSerializer(serializers.ModelSerializer):
 
 
 class StudentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status']
+
+
+class StudentDetailSerializer(serializers.ModelSerializer):
     my_course = MainCourseListSerializer()
     class Meta:
         model = Student
@@ -134,7 +140,68 @@ class StudentListSerializer(serializers.ModelSerializer):
 
 
 class OwnerListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Owner
+        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status']
+
+
+class OwnerDetailSerializer(serializers.ModelSerializer):
     owner_course = MainCourseListSerializer()
     class Meta:
         model = Owner
         fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'owner_course']
+
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    author = UserProfileSerializer()
+
+    class Meta:
+        model = Group
+        fields = ['id', 'author', 'room_group_name', 'image']
+
+
+class GroupSimpleSerializer(serializers.ModelSerializer):
+    author = UserProfileSerializer()
+
+    class Meta:
+        model = Group
+        fields = ['id', 'author', 'room_group_name', 'image']
+
+
+class GroupMemberSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GroupMember
+        fields = ['id', 'group','users', 'joined_at']
+
+
+class GroupMemberSimpleSerializer(serializers.ModelSerializer):
+    users = UserProfileSerializer(many=True)
+    class Meta:
+        model = GroupMember
+        fields = ['id', 'users', 'joined_at']
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['id', 'group', 'author', 'text', 'image', 'video', 'created_at']
+
+
+class GroupDetailSerializer(serializers.ModelSerializer):
+    author = UserProfileSerializer()
+    members = GroupMemberSimpleSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Group
+        fields = ['id', 'author', 'room_group_name', 'image', 'members']
+
+
+class UserProfileListSerializers(serializers.ModelSerializer):
+    group_member = GroupMemberSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = UserProfile
+        fields = ['username', 'group_member']
+
