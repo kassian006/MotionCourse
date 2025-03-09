@@ -70,9 +70,30 @@ class StudentListAPIView(generics.ListAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentListSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ['my_course']  # Фильтр по курсу
-    search_fields = ['first_name', 'last_name']  # Поиск по имени и фамилии
+    filterset_fields = ['my_course__status']  # Фильтрация через фильтрацию полей
+    search_fields = ['first_name', 'last_name']
 
+    def get_queryset(self):
+        queryset = Student.objects.all()
+        filter_type = self.request.query_params.get('type')
+
+        if filter_type == 'free':
+            queryset = queryset.filter(my_course__status='free')  # Фильтруем по бесплатным курсам
+        elif filter_type == 'paid':
+            queryset = queryset.filter(my_course__status='paid')  # Фильтруем по платным курсам
+
+        return queryset
+
+    # def get_queryset(self):
+    #     queryset = Student.objects.all()
+    #     filter_type = self.request.query_params.get('type')
+    #
+    #     if filter_type == 'free':
+    #         queryset = queryset.filter(my_course__status='free')  # Только студенты с бесплатными курсами
+    #     elif filter_type == 'paid':
+    #         queryset = queryset.filter(my_course__status='paid')  # Только студенты с платными курсами
+    #
+    #     return queryset
 
 class StudentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()

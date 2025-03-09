@@ -127,9 +127,18 @@ class UserProfileSimpleSerializer(serializers.ModelSerializer):
 
 
 class StudentListSerializer(serializers.ModelSerializer):
+    course_name = serializers.SerializerMethodField()  # Название курса
+    course_status = serializers.SerializerMethodField()  # Статус курса
+
     class Meta:
         model = Student
-        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status']
+        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status', 'course_name', 'course_status']
+
+    def get_course_name(self, obj):
+        return obj.my_course.title if obj.my_course else None
+
+    def get_course_status(self, obj):
+        return obj.my_course.status if obj.my_course else None  # Получаем статус курса
 
 
 class StudentDetailSerializer(serializers.ModelSerializer):
