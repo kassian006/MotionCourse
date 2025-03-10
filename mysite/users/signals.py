@@ -24,3 +24,15 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         [reset_password_token.user.email],  # Список получателей
         fail_silently=False,
     )
+
+
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from course.models import MainCourse# Импортируем модель курса
+from .utils import send_notification
+
+@receiver(post_save, sender=MainCourse)
+def course_created_notification(sender, instance, created, **kwargs):
+    if created:
+        send_notification(f"Добавлен новый курс: {instance.title}")
