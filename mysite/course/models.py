@@ -64,7 +64,7 @@ class VideoCourse(models.Model):
 
 
 class Favorite(models.Model):
-    user = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='favorite_user')
+    user = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='favorite_user', null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
