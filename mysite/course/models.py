@@ -2,6 +2,9 @@ from django.db import models
 from django.db.models import Avg
 from users.models import UserProfile, Student, Owner, Country, City
 from decimal import Decimal
+from datetime import time
+from django.core.exceptions import ValidationError
+
 
 
 STATUS_COURSE_CHOICES = (
@@ -49,17 +52,19 @@ class Lesson(models.Model):
 
 
 class VideoCourse(models.Model):
+    time = models.TimeField()
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='course_videos')
     course = models.ForeignKey(MainCourse, on_delete=models.CASCADE)
     course_video = models.FileField(upload_to='course_video/')
     title = models.CharField(max_length=1028)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.lesson} - {self.course}'
 
 
 class Favorite(models.Model):
-    user = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='favorite_user')
+    user = models.OneToOneField(Student, on_delete=models.CASCADE, related_name='favorite_user')
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -85,6 +90,19 @@ class CourseReview(models.Model):
     def __str__(self):
         return f'{self.student}, - {self.stars}'
 
+
+class VideoCourseReview(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    video = models.ForeignKey(VideoCourse, on_delete=models.CASCADE, related_name='reviews_video')
+    text = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+    view_date = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.student}, - {self.text}'
+
+
 class AboutUs(models.Model):
     img = models.ImageField(upload_to='owner_img')
     about_owner = models.TextField()
@@ -93,5 +111,8 @@ class AboutUs(models.Model):
         return f'{self.about_owner}'
 
 
-class JoinUs(UserProfile):
-    pass
+class JoinUs(models.Model):
+    email = models.EmailField()
+
+    def __str__(self):
+        return f'{self.email}'
