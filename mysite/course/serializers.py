@@ -1,5 +1,6 @@
 from .models import *
 from rest_framework import serializers
+# from users.serializers import StudentListSerializer
 
 
 class JoinUsSerializer(serializers.ModelSerializer):
@@ -7,22 +8,38 @@ class JoinUsSerializer(serializers.ModelSerializer):
         model = JoinUs
         fields = ['email']
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['category_name']
 
 
-class MainCourseListSerializer(serializers.ModelSerializer):
-    good_check = serializers.SerializerMethodField()
-    time = serializers.TimeField(format('%H:%M'))
+class MainCourseCreateListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MainCourse
-        fields = ['course_img', 'title', 'description', 'status', 'time', 'count_lessons', 'price', 'good_check']
+        fields = '__all__'
+
+
+class MainCourseListSerializer(serializers.ModelSerializer):
+    good_check = serializers.SerializerMethodField()
+    time = serializers.TimeField(format('%H:%M'))
+    category = CategorySerializer(read_only=True)
+
+    class Meta:
+        model = MainCourse
+        fields = ['category_id', 'course_img', 'category', 'title', 'description', 'status', 'time', 'count_lessons', 'price', 'good_check']
 
     def get_good_check(self, obj):
         return obj.get_good_check()
+
+
+class VideoCourseReviewCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = VideoCourseReview
+        fields = '__all__'
 
 
 class VideoCourseReviewListSerializer(serializers.ModelSerializer):
@@ -42,6 +59,13 @@ class VideoCourseReviewListSerializer(serializers.ModelSerializer):
         return str(obj.video)
 
 
+class LessonCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lesson
+        fields = '__all__'
+
+
 class LessonSimpleSerializer(serializers.ModelSerializer):
     name_lesson = serializers.SerializerMethodField()
 
@@ -51,6 +75,13 @@ class LessonSimpleSerializer(serializers.ModelSerializer):
 
     def get_name_lesson(self, obj):
         return str(obj.name_lesson)
+
+
+class VideoCourseCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = VideoCourse
+        fields = '__all__'
 
 
 class VideoCourseSerializer(serializers.ModelSerializer):
@@ -94,33 +125,67 @@ class LessonDetailSerializer(serializers.ModelSerializer):
         fields = ['name_lessons']
 
 
+class AboutUsCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutUs
+        fields = '__all__'
+
 class AboutUsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AboutUs
         fields = ['img', 'about_owner']
 
 
-
-
 class FavoriteSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     class Meta:
         model = Favorite
         fields = ['user', 'created_date']
 
+    def get_user(self, obj):
+        return str(obj.user)
 
 class FavoriteItemSerializer(serializers.ModelSerializer):
+    course = MainCourseListSerializer()
+    favorite = FavoriteSerializer()
     class Meta:
         model = FavoriteItem
         fields = ['course', 'favorite']
 
 
-class CourseReviewListSerializer(serializers.ModelSerializer):
+class CourseReviewCreateSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CourseReview
         fields = '__all__'
 
 
-class CourseReviewDetailSerializer(serializers.ModelSerializer):
+class CourseReviewListSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    course = serializers.SerializerMethodField()
+    created_date = serializers.DateTimeField(format='%d-%m-%Y')
     class Meta:
-        model = FavoriteItem
-        fields = '__all__'
+        model = CourseReview
+        fields = ['student', 'course', 'text', 'stars', 'created_date']
+
+    def get_student(self, obj):
+        return str(obj.student)
+
+    def get_course(self, obj):
+        return str(obj.course)
+
+
+class CourseReviewDetailSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    course = serializers.SerializerMethodField()
+    created_date = serializers.DateTimeField(format='%d-%m-%Y')
+
+    class Meta:
+        model = CourseReview
+        fields = ['student', 'course', 'text', 'stars', 'created_date']
+
+    def get_student(self, obj):
+        return str(obj.student)
+
+    def get_course(self, obj):
+        return str(obj.course)
