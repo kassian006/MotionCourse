@@ -7,7 +7,7 @@ from .views import (
     FavoriteViewSet,
     FavoriteItemViewSet,
     CourseReviewListAPIView,
-    VideoCourseRetrieveAPIView,
+    VideoCourseRetrieveUpdateDestroyAPIView,
     MainCourseCreateAPIView,
     LessonCreateAPIView,
     VideoCourseCreateAPIView,
@@ -17,7 +17,9 @@ from .views import (
     CourseReviewCreateAPIView,
     CourseRetrieveDestroyAPIView,
     VideoCourseReviewListAPIView,
-    VideoCourseReviewCreateAPIView
+    VideoCourseReviewCreateAPIView,
+    LessonDetailView,
+    VideoCourseAPIView
 )
 
 router = SimpleRouter()
@@ -30,8 +32,10 @@ urlpatterns = [
     path('main_courses/create', MainCourseCreateAPIView.as_view(), name='main_courses_create'),
     path('lessons/', LessonListAPIView.as_view(), name='lessons'),
     path('lessons/create', LessonCreateAPIView.as_view(), name='lessons_create'),
-    path('lessons/<int:pk>/', VideoCourseRetrieveAPIView.as_view(), name='lessons_detail'),
+    path('lessons/<int:pk>/', LessonDetailView.as_view(), name='lessons_detail'),
     path('videos/create', VideoCourseCreateAPIView.as_view(), name='lessons_create'),
+    path('videos/', VideoCourseAPIView.as_view(), name='videos_detail'),
+    path('videos/<int:pk>/', VideoCourseRetrieveUpdateDestroyAPIView.as_view(), name='videos_detail'),
     path('categories/', CategoryListAPIView.as_view(), name='categories'),
     path('about_us/', AboutUsListAPIView.as_view(), name='about_us'),
     path('about_us/create', AboutUsCreateAPIView.as_view(), name='about_us_create'),

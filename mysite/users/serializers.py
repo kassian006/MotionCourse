@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate
 from .models import *
 from course.serializers import MainCourseListSerializer
+from course.models import MainCourse
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_rest_passwordreset.models import ResetPasswordToken
+
 
 
 class VerifyResetCodeSerializer(serializers.Serializer):
@@ -123,29 +125,56 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserProfileSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['first_name', 'last_name']
+        fields = ['first_name', 'last_name', 'profile_picture']
 
 
 class StudentListSerializer(serializers.ModelSerializer):
-    course_name = serializers.SerializerMethodField()  # Название курса
-    course_status = serializers.SerializerMethodField()  # Статус курса
 
     class Meta:
         model = Student
-        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status', 'course_name', 'course_status']
+        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name']
 
-    def get_course_name(self, obj):
-        return obj.my_course.title if obj.my_course else None
+class StudentsSerializer(serializers.ModelSerializer):
 
-    def get_course_status(self, obj):
-        return obj.my_course.status if obj.my_course else None  # Получаем статус курса
-
-
-class StudentDetailSerializer(serializers.ModelSerializer):
-    my_course = MainCourseListSerializer()
     class Meta:
         model = Student
-        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'my_course']
+        fields = ['id', 'profile_picture', 'first_name', 'last_name']
+
+
+class StudentEditSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields = ['profile_picture', 'background', 'first_name', 'last_name']
+
+
+class CartCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = '__all__'
+
+
+class CartSerializer(serializers.ModelSerializer):
+    user = UserProfileSimpleSerializer()
+    class Meta:
+        model = Cart
+        fields = ['id', 'user']
+
+
+class CartItemCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    cart = CartSerializer()
+    order_course = MainCourseListSerializer()
+    class Meta:
+        model = CartItem
+        fields = ['cart', 'order_course']
+
+
 
 
 class OwnerListSerializer(serializers.ModelSerializer):
@@ -155,15 +184,15 @@ class OwnerListSerializer(serializers.ModelSerializer):
 
 
 class OwnerDetailSerializer(serializers.ModelSerializer):
-    owner_course = MainCourseListSerializer()
+    # owner_course = MainCourseListSerializer()
     class Meta:
         model = Owner
-        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'owner_course']
+        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status']
 
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    author = UserProfileSerializer()
+    author = UserProfileSerializer(read_only=True)
 
     class Meta:
         model = Group
@@ -171,35 +200,42 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class GroupSimpleSerializer(serializers.ModelSerializer):
-    author = UserProfileSerializer()
 
     class Meta:
         model = Group
-        fields = ['id', 'author', 'room_group_name', 'image']
+        fields = ['id','room_group_name', 'image']
 
 
 class GroupMemberSerializer(serializers.ModelSerializer):
-
+    joined_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+    group = GroupSimpleSerializer()
+    users = UserProfileSimpleSerializer(many=True)
     class Meta:
         model = GroupMember
         fields = ['id', 'group','users', 'joined_at']
 
 
 class GroupMemberSimpleSerializer(serializers.ModelSerializer):
-    users = UserProfileSerializer(many=True)
+    users = UserProfileSimpleSerializer(many=True)
+    joined_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+
     class Meta:
         model = GroupMember
         fields = ['id', 'users', 'joined_at']
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    group = GroupSimpleSerializer()
+    author = UserProfileSimpleSerializer()
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+
     class Meta:
         model = Message
         fields = ['id', 'group', 'author', 'text', 'image', 'video', 'created_at']
 
 
 class GroupDetailSerializer(serializers.ModelSerializer):
-    author = UserProfileSerializer()
+    author = UserProfileSimpleSerializer()
     members = GroupMemberSimpleSerializer(read_only=True, many=True)
 
     class Meta:

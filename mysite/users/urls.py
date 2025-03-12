@@ -2,8 +2,10 @@ from .views import *
 from django.urls import path,include
 from rest_framework import routers
 
+
 router = routers.SimpleRouter()
 router.register(r'users', UserProfileViewSet, basename='users'),
+
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -12,10 +14,18 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('students/', StudentListAPIView.as_view(), name='students_list'),
-    path('students/<int:pk>/', StudentDetailAPIView.as_view(), name='students_detail'),
+    path('students/', StudentListView.as_view(), name='student'),
+    path('students/<int:pk>/', StudentUpdateView.as_view(), name='student-update'),
+    path('all_students/', AllStudentsAPIView.as_view(), name='all_students'),
     path('owner/', OwnerListAPIView.as_view(), name='owner_list'),
     path('owner/<int:pk>/', OwnerDetailAPIView.as_view(), name='owner_detail'),
+    path('cart/', CartListAPIView.as_view(), name='cart'),
+    path('cart/<int:pk>/', CartRetrieveUpdateDestroyAPIView.as_view(), name='cart_detail'),
+    path('cart/create/', CartCreateAPIView.as_view(), name='cart_create'),
+    path('cart_item/', CartItemListAPIView.as_view(), name='cart_item'),
+    path('cart_item/<int:pk>/', CartItemRetrieveUpdateDestroyAPIView.as_view(), name='cart_item_detail'),
+    path('cart_item/create/', CartItemCreateAPIView.as_view(), name='cart_item_create'),
+
     path('group/<int:group_id>/remove_user/<int:user_id>/', RemoveUserFromGroupView.as_view(),
          name='remove_user_from_group'),
     path('user/', GroupMemberView.as_view(), name='user_list'),

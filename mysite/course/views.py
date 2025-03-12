@@ -1,10 +1,33 @@
-from rest_framework import viewsets, generics, status, filters
-from rest_framework.response import Response
+from rest_framework import viewsets, generics, status, filters, permissions
+from .serializers import (
+    JoinUsSerializer,
+    CategorySerializer,
+    MainCourseCreateListSerializer,
+    MainCourseListSerializer,
+    VideoCourseReviewCreateSerializer,
+    VideoCourseSimpleSerializer,
+    VideoCourseReviewListSerializer,
+    LessonCreateSerializer,
+    LessonSimpleSerializer,
+    VideoCourseCreateSerializer,
+    VideoCourseSerializer,
+    LessonSerializer,
+    MainCourseLessonsSerializer,
+    LessonDetailSerializer,
+    AboutUsCreateSerializer,
+    AboutUsSerializer,
+    FavoriteSerializer,
+    FavoriteItemSerializer,
+    CourseReviewCreateSerializer,
+    CourseReviewListSerializer,
+    CourseReviewDetailSerializer
+)
 from .models import *
 from users.models import UserProfile
-from .serializers import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from .permissions import CheckEditOwner, CheckStatusCreate, CheckStudentReview
+
 
 
 
@@ -16,6 +39,10 @@ class CategoryListAPIView(generics.ListAPIView):
 class MainCourseCreateAPIView(generics.CreateAPIView):
     queryset = MainCourse.objects.all()
     serializer_class = MainCourseCreateListSerializer
+    permission_classes = [CheckStatusCreate]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class MainCourseListAPIView(generics.ListAPIView):
@@ -40,6 +67,10 @@ class MainCourseListAPIView(generics.ListAPIView):
 class LessonCreateAPIView(generics.CreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonCreateSerializer
+    permission_classes = [CheckStatusCreate]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class LessonListAPIView(generics.ListAPIView):
@@ -47,19 +78,36 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
 
 
-class LessonVideoRetrieveAPIView(generics.RetrieveAPIView):
+class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
-    serializer_class = LessonDetailSerializer
+    serializer_class = LessonSerializer
+    permission_classes = [CheckEditOwner]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class VideoCourseAPIView(generics.ListAPIView):
+    queryset = VideoCourse.objects.all()
+    serializer_class = VideoCourseSerializer
 
 
 class VideoCourseCreateAPIView(generics.CreateAPIView):
     queryset = VideoCourse.objects.all()
     serializer_class = VideoCourseCreateSerializer
+    permission_classes = [CheckStatusCreate]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
-class VideoCourseRetrieveAPIView(generics.RetrieveAPIView):
+class VideoCourseRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = VideoCourse.objects.all()
     serializer_class = VideoCourseSerializer
+    permission_classes = [CheckEditOwner]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class AboutUsListAPIView(generics.ListAPIView):
@@ -70,6 +118,10 @@ class AboutUsListAPIView(generics.ListAPIView):
 class AboutUsCreateAPIView(generics.CreateAPIView):
     queryset = AboutUs.objects.all()
     serializer_class = AboutUsCreateSerializer
+    permission_classes = [CheckStatusCreate]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class JoinUsCreateAPIView(generics.CreateAPIView):
@@ -89,8 +141,8 @@ class FavoriteItemViewSet(viewsets.ModelViewSet):
     queryset = FavoriteItem.objects.all()
     serializer_class = FavoriteItemSerializer
 
-    # def get_queryset(self):
-    #     return Favorite.objects.filter(user__id=self.request.user.id)
+    def get_queryset(self):
+        return Favorite.objects.filter(user__id=self.request.user.id)
 
 
 class CourseReviewListAPIView(generics.ListAPIView):
@@ -101,11 +153,19 @@ class CourseReviewListAPIView(generics.ListAPIView):
 class CourseRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CourseReview.objects.all()
     serializer_class = CourseReviewDetailSerializer
+    permission_classes = [CheckStudentReview]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class CourseReviewCreateAPIView(generics.CreateAPIView):
     queryset = CourseReview.objects.all()
     serializer_class = CourseReviewCreateSerializer
+    permission_classes = [CheckStudentReview]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class VideoCourseReviewListAPIView(generics.ListAPIView):
@@ -116,3 +176,9 @@ class VideoCourseReviewListAPIView(generics.ListAPIView):
 class VideoCourseReviewCreateAPIView(generics.CreateAPIView):
     queryset = VideoCourseReview.objects.all()
     serializer_class = VideoCourseReviewCreateSerializer
+    permission_classes = [CheckStudentReview]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+

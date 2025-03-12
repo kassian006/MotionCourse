@@ -1,15 +1,38 @@
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import *
-from .serializers import *
+from .serializers import (VerifyResetCodeSerializer,
+    UserSerializer,
+    LoginSerializer,
+    LogoutSerializer,
+    UserProfileSerializer,
+    UserProfileSimpleSerializer,
+    StudentListSerializer,
+    StudentsSerializer,
+    StudentEditSerializer,
+    CartCreateSerializer,
+    CartSerializer,
+    CartItemCreateSerializer,
+    CartItemSerializer,
+    OwnerListSerializer,
+    OwnerDetailSerializer,
+    GroupSerializer,
+    GroupSimpleSerializer,
+    GroupMemberSerializer,
+    GroupMemberSimpleSerializer,
+    MessageSerializer,
+    GroupDetailSerializer,
+    UserProfileListSerializers
+)
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.decorators import api_view
 from rest_framework import viewsets, filters
 from rest_framework.generics import RetrieveAPIView
 from django_filters.rest_framework import DjangoFilterBackend
-
+from course.permissions import CheckEditOwner, CheckStudentReview
 
 
 @api_view(['POST'])
@@ -66,11 +89,108 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         return UserProfile.objects.filter(id=self.request.user.id)
 
 
-class StudentListAPIView(generics.ListAPIView):
+class StudentListView(generics.ListAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class StudentUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class CartListAPIView(generics.ListAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class CartCreateAPIView(generics.CreateAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartCreateSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class CartRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class CartItemListAPIView(generics.ListAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class CartItemCreateAPIView(generics.CreateAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemCreateSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class CartItemRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CartItem.objects.all()
+    serializer_class = CartItemSerializer
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+class OwnerListAPIView(generics.ListAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerListSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ['owner_course__status']  # Правильное поле
+    search_fields = ['first_name', 'last_name']
+
+
+    def get_queryset(self):
+        queryset = Owner.objects.all()
+        filter_type = self.request.query_params.get('type')
+
+        if filter_type == 'free':
+            queryset = queryset.filter(owner_course__status='free')  # Проверяем связь
+        elif filter_type == 'paid':
+            queryset = queryset.filter(owner_course__status='paid')
+
+        return queryset
+
+
+class OwnerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerDetailSerializer
+    lookup_field = "pk"
+    permission_classes = [CheckEditOwner]
+
+    def get_queryset(self):
+        return UserProfile.objects.filter(id=self.request.user.id)
+
+
+
+class AllStudentsAPIView(generics.ListAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentListSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ['my_course__status']  # Фильтрация через фильтрацию полей
+    filterset_fields = ['student_course__status']
     search_fields = ['first_name', 'last_name']
 
     def get_queryset(self):
@@ -78,68 +198,47 @@ class StudentListAPIView(generics.ListAPIView):
         filter_type = self.request.query_params.get('type')
 
         if filter_type == 'free':
-            queryset = queryset.filter(my_course__status='free')  # Фильтруем по бесплатным курсам
+            queryset = queryset.filter(student_course__status='free')
         elif filter_type == 'paid':
-            queryset = queryset.filter(my_course__status='paid')  # Фильтруем по платным курсам
+            queryset = queryset.filter(student_course__status='paid')
 
         return queryset
-
-    # def get_queryset(self):
-    #     queryset = Student.objects.all()
-    #     filter_type = self.request.query_params.get('type')
-    #
-    #     if filter_type == 'free':
-    #         queryset = queryset.filter(my_course__status='free')  # Только студенты с бесплатными курсами
-    #     elif filter_type == 'paid':
-    #         queryset = queryset.filter(my_course__status='paid')  # Только студенты с платными курсами
-    #
-    #     return queryset
-
-class StudentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Student.objects.all()
-    serializer_class = StudentDetailSerializer
-    lookup_field = "pk"
-
-
-    # def get_queryset(self):
-    #     return UserProfile.objects.filter(id=self.request.user.id)
-
-
-class OwnerListAPIView(generics.ListAPIView):
-    queryset = Owner.objects.all()
-    serializer_class = OwnerListSerializer
-
-
-
-class OwnerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Owner.objects.all()
-    serializer_class = OwnerDetailSerializer
-    lookup_field = "pk"
-
-
-    # def get_queryset(self):
-    #     return UserProfile.objects.filter(id=self.request.user.id)
-
 
 
 class GroupListCreateView(generics.ListCreateAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Только авторизованные пользователи
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Устанавливаем текущего пользователя как автора
 
 
 class GroupDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Только авторизованные пользователи
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Устанавливаем текущего пользователя как автора
 
 
 class GroupMemberView(generics.ListCreateAPIView):
     queryset = GroupMember.objects.all()
     serializer_class = GroupMemberSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Только авторизованные пользователи
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Устанавливаем текущего пользователя как автора
 
 
 class GroupMemberRetrieve(generics.RetrieveDestroyAPIView):
     queryset = GroupMember.objects.all()
     serializer_class = GroupMemberSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Только авторизованные пользователи
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)  # Устанавливаем текущего пользователя как автора
 
 
 class MessageListCreateView(generics.ListCreateAPIView):
@@ -168,6 +267,23 @@ class MessageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def perform_create(self, serializer):
+        """Переопределяем метод создания, чтобы проверить членство в группе"""
+        user = self.request.user
+        group = serializer.validated_data['group']  # Получаем группу из запроса
+
+        # Проверяем, состоит ли пользователь в группе
+        if not GroupMember.objects.filter(group=group, users=user).exists():
+            return Response(
+                {"detail": "Вы не состоите в этой группе."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Если все ок — сохраняем сообщение
+        serializer.save(author=user)
 
 from rest_framework.response import Response
 from rest_framework.views import APIView

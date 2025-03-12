@@ -2,8 +2,6 @@ from django.db import models
 from django.db.models import Avg
 from users.models import UserProfile, Student, Owner, Country, City
 from decimal import Decimal
-from datetime import time
-from django.core.exceptions import ValidationError
 
 
 
@@ -21,13 +19,13 @@ class Category(models.Model):
 
 
 class MainCourse(models.Model):
+    created_by = models.ForeignKey(Owner, on_delete=models.CASCADE, related_name="main_courses")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     title = models.CharField(max_length=512)
     description = models.TextField()
     course_img = models.ImageField(upload_to='course_img/')
     status = models.CharField(choices=STATUS_COURSE_CHOICES, max_length=64)
     time = models.TimeField()
-    # user_course = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_course')
     count_lessons = models.PositiveSmallIntegerField()
     price = models.PositiveSmallIntegerField()
 
@@ -44,6 +42,7 @@ class MainCourse(models.Model):
 
 
 class Lesson(models.Model):
+    created_by = models.ForeignKey(Owner, on_delete=models.CASCADE, related_name="lesson_courses")
     name_lesson = models.ForeignKey(MainCourse, on_delete=models.CASCADE, related_name='name_lessons')
     title = models.CharField(max_length=512)
 
@@ -52,6 +51,7 @@ class Lesson(models.Model):
 
 
 class VideoCourse(models.Model):
+    created_by = models.ForeignKey(Owner, on_delete=models.CASCADE, related_name="video_courses")
     time = models.TimeField()
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='course_videos')
     course = models.ForeignKey(MainCourse, on_delete=models.CASCADE)

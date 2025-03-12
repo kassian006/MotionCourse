@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-from course.models import *
+
+def get_student_courses():
+    from course.models import MainCourse
+    # Используйте MainCourse здесь
 
 
 STATUS_CHOICES = (
@@ -31,29 +34,33 @@ class UserProfile(AbstractUser):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     background = models.FileField(upload_to='background/', null=True, blank=True)
-    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='student')
-
-
 
     def __str__(self):
         return f'{self.last_name}, {self.first_name}'
 
 
 class Student(UserProfile):
-    my_course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, related_name='my_course')
-    pass
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='student')
 
     def __str__(self):
         return f'{self.first_name}, {self.last_name}'
 
     class Meta:
         verbose_name = 'Student'
-        verbose_name_plural = 'Student'
+        verbose_name_plural = 'Students'
+
+
+class PurchasedCourse(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='purchased_courses')
+    course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, related_name='purchases')
+    purchase_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.student} купил {self.course}'
 
 
 class Owner(UserProfile):
-    owner_course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, related_name='owner_course')
-    pass
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='owner')
 
     def __str__(self):
         return f'{self.first_name}, {self.last_name}'
@@ -61,6 +68,20 @@ class Owner(UserProfile):
     class Meta:
         verbose_name = 'Owner'
         verbose_name_plural = 'Owner'
+
+class Cart(models.Model):
+    user = models.OneToOneField(Student, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user}'
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    order_course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.cart} - {self.order_course}'
 
 
  # THIS CHAT
@@ -71,7 +92,7 @@ class Group(models.Model):
     image = models.ImageField(upload_to='image_group/', null=True, blank=True)
 
     def __str__(self):
-        return self.room_group_name
+        return f'{self.room_group_name}'
 
 
 class GroupMember(models.Model):
