@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('students/', StudentListAPIView.as_view(), name='students_list'),
     path('students/<int:pk>/', StudentDetailAPIView.as_view(), name='students_detail'),
+    path('student_register/', StudentRegisterAPIView.as_view(), name='students_register'),
     path('owner/', OwnerListAPIView.as_view(), name='owner_list'),
     path('owner/<int:pk>/', OwnerDetailAPIView.as_view(), name='owner_detail'),
     path('group/<int:group_id>/remove_user/<int:user_id>/', RemoveUserFromGroupView.as_view(),

@@ -66,23 +66,28 @@ class UserProfileViewSet(viewsets.ModelViewSet):
         return UserProfile.objects.filter(id=self.request.user.id)
 
 
+class StudentRegisterAPIView(generics.CreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentRegisterSerializer
+
+
 class StudentListAPIView(generics.ListAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentListSerializer
-    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ['my_course__status']  # Фильтрация через фильтрацию полей
-    search_fields = ['first_name', 'last_name']
-
-    def get_queryset(self):
-        queryset = Student.objects.all()
-        filter_type = self.request.query_params.get('type')
-
-        if filter_type == 'free':
-            queryset = queryset.filter(my_course__status='free')  # Фильтруем по бесплатным курсам
-        elif filter_type == 'paid':
-            queryset = queryset.filter(my_course__status='paid')  # Фильтруем по платным курсам
-
-        return queryset
+    # filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    # filterset_fields = ['my_course__status']  # Фильтрация через фильтрацию полей
+    # search_fields = ['first_name', 'last_name']
+    #
+    # def get_queryset(self):
+    #     queryset = Student.objects.all()
+    #     filter_type = self.request.query_params.get('type')
+    #
+    #     if filter_type == 'free':
+    #         queryset = queryset.filter(my_course__status='free')  # Фильтруем по бесплатным курсам
+    #     elif filter_type == 'paid':
+    #         queryset = queryset.filter(my_course__status='paid')  # Фильтруем по платным курсам
+    #
+    #     return queryset
 
     # def get_queryset(self):
     #     queryset = Student.objects.all()
@@ -99,6 +104,20 @@ class StudentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentDetailSerializer
     lookup_field = "pk"
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ['my_course__status']  # Фильтрация через фильтрацию полей
+    search_fields = ['first_name', 'last_name']
+
+    def get_queryset(self):
+        queryset = Student.objects.all()
+        filter_type = self.request.query_params.get('type')
+
+        if filter_type == 'free':
+            queryset = queryset.filter(my_course__status='free')  # Фильтруем по бесплатным курсам
+        elif filter_type == 'paid':
+            queryset = queryset.filter(my_course__status='paid')  # Фильтруем по платным курсам
+
+        return queryset
 
 
     # def get_queryset(self):
@@ -111,10 +130,25 @@ class OwnerListAPIView(generics.ListAPIView):
 
 
 
+
 class OwnerDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Owner.objects.all()
     serializer_class = OwnerDetailSerializer
     lookup_field = "pk"
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
+    filterset_fields = ['my_course__status']  # Фильтрация через фильтрацию полей
+    search_fields = ['first_name', 'last_name']
+
+    def get_queryset(self):
+        queryset = Student.objects.all()
+        filter_type = self.request.query_params.get('type')
+
+        if filter_type == 'free':
+            queryset = queryset.filter(my_course__status='free')  # Фильтруем по бесплатным курсам
+        elif filter_type == 'paid':
+            queryset = queryset.filter(my_course__status='paid')  # Фильтруем по платным курсам
+
+        return queryset
 
 
     # def get_queryset(self):

@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from .models import *
-from course.serializers import MainCourseListSerializer
+from course.serializers import MainCourseListSerializer, FavoriteItemSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_rest_passwordreset.models import ResetPasswordToken
@@ -126,9 +126,17 @@ class UserProfileSimpleSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name']
 
 
+class StudentRegisterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status',]
+
+
 class StudentListSerializer(serializers.ModelSerializer):
     course_name = serializers.SerializerMethodField()  # Название курса
     course_status = serializers.SerializerMethodField()  # Статус курса
+
 
     class Meta:
         model = Student
@@ -143,9 +151,10 @@ class StudentListSerializer(serializers.ModelSerializer):
 
 class StudentDetailSerializer(serializers.ModelSerializer):
     my_course = MainCourseListSerializer()
+    course_favorite = FavoriteItemSerializer()
     class Meta:
         model = Student
-        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'my_course']
+        fields = ['profile_picture', 'background', 'first_name', 'last_name', 'status', 'my_course', 'course_favorite']
 
 
 class OwnerListSerializer(serializers.ModelSerializer):

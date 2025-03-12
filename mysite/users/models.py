@@ -4,6 +4,7 @@ from django.conf import settings
 
 from course.models import *
 
+from mysite.course.models import Favorite
 
 STATUS_CHOICES = (
     ('admin', 'admin'),
@@ -61,6 +62,15 @@ class Owner(UserProfile):
     class Meta:
         verbose_name = 'Owner'
         verbose_name_plural = 'Owner'
+
+
+# class Order(models.Model):
+#     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student_profile')
+#     favorite = models.ForeignKey(Favorite, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return f'{self.student}'
+
 
 
  # THIS CHAT
