@@ -129,7 +129,6 @@ class UserProfileSimpleSerializer(serializers.ModelSerializer):
 
 
 class StudentListSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Student
         fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name']
@@ -175,9 +174,8 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = ['cart', 'order_course']
 
 
-
-
 class OwnerListSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Owner
         fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name', 'status']

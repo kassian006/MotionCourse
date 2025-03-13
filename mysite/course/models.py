@@ -57,7 +57,7 @@ class VideoCourse(models.Model):
     course = models.ForeignKey(MainCourse, on_delete=models.CASCADE)
     course_video = models.FileField(upload_to='course_video/')
     title = models.CharField(max_length=1028)
-    created_date = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.lesson} - {self.course}'

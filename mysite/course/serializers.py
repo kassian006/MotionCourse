@@ -1,5 +1,9 @@
 from .models import *
 from rest_framework import serializers
+
+from users.models import Student
+
+
 # from mysite.users.serializers import StudentListSerializer, UserProfileSimpleSerializer
 
 
@@ -22,15 +26,23 @@ class MainCourseCreateListSerializer(serializers.ModelSerializer):
         model = MainCourse
         fields = '__all__'
 
+class MainCourseSimpleListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MainCourse
+        fields = ['title', 'description', 'status',]
+
 
 class MainCourseListSerializer(serializers.ModelSerializer):
     time = serializers.TimeField(format='%H:%M')
     category = CategorySerializer(read_only=True)
-
+    good_check = serializers.SerializerMethodField()
     class Meta:
         model = MainCourse
-        fields = ['category_id', 'course_img', 'category', 'title', 'description', 'status', 'time', 'count_lessons', 'price',]
+        fields = ['course_img', 'category', 'title', 'description', 'status', 'time', 'count_lessons', 'price', 'good_check']
 
+    def get_good_check(self, obj):
+        return  obj.get_good_check()
 
 class VideoCourseReviewCreateSerializer(serializers.ModelSerializer):
 
@@ -46,15 +58,20 @@ class VideoCourseSimpleSerializer(serializers.ModelSerializer):
 
 
 
+class StudentListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'username']
+
 class VideoCourseReviewListSerializer(serializers.ModelSerializer):
-    # student = StudentListSerializer()
-    created_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
-    view_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
-    video = VideoCourseSimpleSerializer()
+    created_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
+    view_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
+    video = VideoCourseSimpleSerializer(read_only=True)
+    student = StudentListSerializer(read_only=True)
 
     class Meta:
         model = VideoCourseReview
-        fields = ['student', 'video', 'text', 'created_date', 'view_date', 'parent']
+        fields = ['student', 'text', 'video', 'created_date', 'view_date', 'parent']
 
 
 class LessonCreateSerializer(serializers.ModelSerializer):
@@ -81,20 +98,20 @@ class VideoCourseCreateSerializer(serializers.ModelSerializer):
 
 
 class VideoCourseSerializer(serializers.ModelSerializer):
-    lesson = LessonSimpleSerializer()
-    created_date = serializers.DateTimeField(format='%d-%m-%Y')
+    lesson = LessonSimpleSerializer(read_only=True)  # Используйте 'lesson' напрямую
+    created_date = serializers.DateField(format='%d-%m-%Y')
     time = serializers.TimeField(format='%H:%M')
-    video_review = VideoCourseReviewListSerializer( read_only=True, source='reviews_video')
+    video_review = VideoCourseReviewListSerializer(read_only=True)
 
     class Meta:
         model = VideoCourse
-        fields = ['id','lesson', 'course_video', 'created_date', 'time', 'video_review']
+        fields = ['id', 'lesson', 'created_date', 'time', 'video_review', 'course_video', 'title']
 
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    name_lesson = LessonSimpleSerializer()
-    course_videos = VideoCourseSerializer(read_only=True)
+    name_lesson = MainCourseSimpleListSerializer(read_only=True)
+    course_videos = VideoCourseSerializer(read_only=True, many=True)
 
     class Meta:
         model = Lesson
