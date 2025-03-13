@@ -40,6 +40,7 @@ class UserProfile(AbstractUser):
 
 
 class Student(UserProfile):
+    courses = models.ManyToManyField('course.MainCourse', related_name='students')
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='student')
 
     def __str__(self):
@@ -50,16 +51,8 @@ class Student(UserProfile):
         verbose_name_plural = 'Students'
 
 
-class PurchasedCourse(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='purchased_courses')
-    course = models.ForeignKey('course.MainCourse', on_delete=models.CASCADE, related_name='purchases')
-    purchase_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.student} купил {self.course}'
-
-
 class Owner(UserProfile):
+    courses = models.ManyToManyField('course.MainCourse', related_name='owners')
     status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='owner')
 
     def __str__(self):
@@ -67,7 +60,7 @@ class Owner(UserProfile):
 
     class Meta:
         verbose_name = 'Owner'
-        verbose_name_plural = 'Owner'
+        verbose_name_plural = 'Owners'
 
 class Cart(models.Model):
     user = models.OneToOneField(Student, on_delete=models.CASCADE)

@@ -39,10 +39,10 @@ class CategoryListAPIView(generics.ListAPIView):
 class MainCourseCreateAPIView(generics.CreateAPIView):
     queryset = MainCourse.objects.all()
     serializer_class = MainCourseCreateListSerializer
-    permission_classes = [CheckStatusCreate]
+    # permission_classes = [CheckStatusCreate]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class MainCourseListAPIView(generics.ListAPIView):
@@ -67,10 +67,10 @@ class MainCourseListAPIView(generics.ListAPIView):
 class LessonCreateAPIView(generics.CreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonCreateSerializer
-    permission_classes = [CheckStatusCreate]
+    # permission_classes = [CheckStatusCreate]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class LessonListAPIView(generics.ListAPIView):
@@ -81,10 +81,10 @@ class LessonListAPIView(generics.ListAPIView):
 class LessonDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [CheckEditOwner]
+    # permission_classes = [CheckEditOwner]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class VideoCourseAPIView(generics.ListAPIView):
@@ -95,19 +95,19 @@ class VideoCourseAPIView(generics.ListAPIView):
 class VideoCourseCreateAPIView(generics.CreateAPIView):
     queryset = VideoCourse.objects.all()
     serializer_class = VideoCourseCreateSerializer
-    permission_classes = [CheckStatusCreate]
+    # permission_classes = [CheckStatusCreate]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class VideoCourseRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = VideoCourse.objects.all()
     serializer_class = VideoCourseSerializer
-    permission_classes = [CheckEditOwner]
+    # permission_classes = [CheckEditOwner]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class AboutUsListAPIView(generics.ListAPIView):
@@ -118,10 +118,10 @@ class AboutUsListAPIView(generics.ListAPIView):
 class AboutUsCreateAPIView(generics.CreateAPIView):
     queryset = AboutUs.objects.all()
     serializer_class = AboutUsCreateSerializer
-    permission_classes = [CheckStatusCreate]
-
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # permission_classes = [CheckStatusCreate]
+    #
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class JoinUsCreateAPIView(generics.CreateAPIView):
@@ -153,19 +153,19 @@ class CourseReviewListAPIView(generics.ListAPIView):
 class CourseRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = CourseReview.objects.all()
     serializer_class = CourseReviewDetailSerializer
-    permission_classes = [CheckStudentReview]
+    # permission_classes = [CheckStudentReview]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class CourseReviewCreateAPIView(generics.CreateAPIView):
     queryset = CourseReview.objects.all()
     serializer_class = CourseReviewCreateSerializer
-    permission_classes = [CheckStudentReview]
+    # permission_classes = [CheckStudentReview]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
 class VideoCourseReviewListAPIView(generics.ListAPIView):
@@ -176,9 +176,9 @@ class VideoCourseReviewListAPIView(generics.ListAPIView):
 class VideoCourseReviewCreateAPIView(generics.CreateAPIView):
     queryset = VideoCourseReview.objects.all()
     serializer_class = VideoCourseReviewCreateSerializer
-    permission_classes = [CheckStudentReview]
+    # permission_classes = [CheckStudentReview]
 
-    def get_queryset(self):
-        return UserProfile.objects.filter(id=self.request.user.id)
+    # def get_queryset(self):
+    #     return UserProfile.objects.filter(id=self.request.user.id)
 
 
