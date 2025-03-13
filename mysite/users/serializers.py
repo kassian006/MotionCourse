@@ -207,26 +207,25 @@ class GroupSimpleSerializer(serializers.ModelSerializer):
 
 
 class GroupMemberSerializer(serializers.ModelSerializer):
-    joined_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
-    group = GroupSimpleSerializer()
     users = UserProfileSimpleSerializer(many=True)
+    joined_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+
     class Meta:
         model = GroupMember
-        fields = ['id', 'group','users', 'joined_at']
+        fields = ['id', 'group', 'users', 'joined_at']
 
 
 class GroupMemberSimpleSerializer(serializers.ModelSerializer):
-    users = UserProfileSimpleSerializer(many=True)
     joined_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 
     class Meta:
         model = GroupMember
-        fields = ['id', 'users', 'joined_at']
+        fields = ['id', 'joined_at']
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    group = GroupSimpleSerializer()
-    author = UserProfileSimpleSerializer()
+    group = GroupSimpleSerializer(read_only=True)
+    author = UserProfileSimpleSerializer(read_only=True)
     created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 
     class Meta:
@@ -235,8 +234,8 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class GroupDetailSerializer(serializers.ModelSerializer):
-    author = UserProfileSimpleSerializer()
-    members = GroupMemberSimpleSerializer(read_only=True, many=True)
+    author = UserProfileSimpleSerializer(read_only=True)
+    members = GroupMemberSimpleSerializer(read_only=True)
 
     class Meta:
         model = Group
@@ -244,7 +243,7 @@ class GroupDetailSerializer(serializers.ModelSerializer):
 
 
 class UserProfileListSerializers(serializers.ModelSerializer):
-    group_member = GroupMemberSerializer(read_only=True, many=True)
+    group_member = GroupMemberSerializer(read_only=True)
 
     class Meta:
         model = UserProfile
