@@ -62,6 +62,8 @@ class StudentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'username']
+        ref_name = 'CourseStudentList'  # Уникальное имя схемы для course.serializers
+
 
 class VideoCourseReviewListSerializer(serializers.ModelSerializer):
     created_date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)

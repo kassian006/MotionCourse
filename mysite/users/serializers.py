@@ -132,6 +132,8 @@ class StudentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'profile_picture', 'background', 'first_name', 'last_name']
+        ref_name = 'UserStudentList'  # Уникальное имя схемы для users.serializers
+
 
 class StudentsSerializer(serializers.ModelSerializer):
 
