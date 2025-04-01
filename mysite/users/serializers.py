@@ -222,7 +222,7 @@ class GroupMemberSimpleSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    group = GroupSimpleSerializer(read_only=True)
+    group = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())  # Принимает ID группы
     author = UserProfileSimpleSerializer(read_only=True)
     created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
 

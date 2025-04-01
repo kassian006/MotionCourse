@@ -243,7 +243,7 @@ class GroupMemberRetrieve(generics.RetrieveDestroyAPIView):
 class MessageListCreateView(generics.ListCreateAPIView):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
 
     def perform_create(self, serializer):
